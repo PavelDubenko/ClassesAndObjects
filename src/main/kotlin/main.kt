@@ -24,7 +24,6 @@ object WallService {
     private var lastId = 0
 
     fun add(post: Post): Post {
-        post.id = ++lastId
         posts += post.copy(id = ++lastId, likes = post.likes.copy())
             return posts.last()
     }
