@@ -1,38 +1,58 @@
 data class Post(
-    val id: Int,
-    val ownerName: String,
-    val date: Int,
-    val text: String,
-    val createdBy: Int,
-    val canPin: Boolean,
-    val canDelete: Boolean,
-    val canEdit: Boolean,
-    val isFavourite: Boolean,
+    var id: Int,
+    val ownerName: String = "Pavel",
+    val date: Int = 11072023,
+    val text: String = "kotlin is cool",
+    val createdBy: Int = 1,
+    val canPin: Boolean = true,
+    val canDelete: Boolean = true,
+    val canEdit: Boolean = true,
+    val isFavourite: Boolean = true,
     var likes: Likes
     )
 
 data class Likes (
     val count: Int,
-    val userLikes: Boolean,
-    val canLike: Boolean,
-    val canPublish: Boolean
+    val userLikes: Boolean = true,
+    val canLike: Boolean = true,
+    val canPublish: Boolean = true
 )
 
 object WallService {
+
     private var posts = emptyArray<Post>()
+    private var lastId = 0
+
     fun add(post: Post): Post {
-        posts += post
+        post.id = ++lastId
+        posts += post.copy(id = ++lastId, likes = post.likes.copy())
             return posts.last()
     }
-    fun update (post: Post): Boolean {
 
+    fun update(post: Post): Boolean{
+        for((index, oldPost) in posts.withIndex()) {
+            if (oldPost.id == post.id) {
+                posts[index] = post.copy(likes = post.likes.copy())
+                return true
+            }
+        }
+        return false
+    }
+
+   fun printAllPosts () {
+        for(post in posts) {
+            println(post)
+        }
     }
 
 }
 fun main() {
-    val post = Post(1,"Pavel Dubenko", 1_10_2000, "Nice", 1, true, true, true, true, Likes(1, true,true,true)
-    )
-    WallService.add(post)
+
+    WallService.add(Post(1, likes = Likes(10)))
+    WallService.add(Post(2, likes = Likes(5)))
+    WallService.printAllPosts()
+    WallService.update(Post(1, likes = Likes(15)))
+    WallService.printAllPosts()
 
 }
 
