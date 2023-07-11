@@ -1,5 +1,5 @@
 data class Post(
-    var id: Int,
+    val id: Int,
     val ownerName: String = "Pavel",
     val date: Int = 11072023,
     val text: String = "kotlin is cool",
