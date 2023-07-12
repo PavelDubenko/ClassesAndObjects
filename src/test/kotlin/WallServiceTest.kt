@@ -10,7 +10,6 @@ class WallServiceTest {
         WallService.add(post)
         val result = WallService.posts.size
 
-        //assertEquals(post, result)
         assertEquals(1, result)
     }
 
@@ -24,7 +23,7 @@ class WallServiceTest {
 
         assertTrue(result)
         assertEquals(updatedPost, WallService.posts[0])
-    }
+        }
 
     @Test
     fun testUpdateNonExistingPost() {
