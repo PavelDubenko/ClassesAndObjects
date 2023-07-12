@@ -9,7 +9,7 @@ data class Post(
     val canEdit: Boolean = true,
     val isFavourite: Boolean = true,
     var likes: Likes
-    )
+)
 
 data class Likes (
     val count: Int,
@@ -20,12 +20,12 @@ data class Likes (
 
 object WallService {
 
-    private var posts = emptyArray<Post>()
-    private var lastId = 0
+    var posts = emptyArray<Post>()
+    var lastId = 0
 
     fun add(post: Post): Post {
         posts += post.copy(id = ++lastId, likes = post.likes.copy())
-            return posts.last()
+        return posts.last()
     }
 
     fun update(post: Post): Boolean{
@@ -38,7 +38,7 @@ object WallService {
         return false
     }
 
-   fun printAllPosts () {
+    fun printAllPosts () {
         for(post in posts) {
             println(post)
         }
@@ -52,6 +52,6 @@ fun main() {
     WallService.printAllPosts()
     WallService.update(Post(1, likes = Likes(15)))
     WallService.printAllPosts()
+    println(WallService.posts.size)
 
 }
-
