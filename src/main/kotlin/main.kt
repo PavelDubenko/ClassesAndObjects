@@ -21,7 +21,7 @@ data class Likes (
 object WallService {
 
     var posts = emptyArray<Post>()
-    var lastId = 0
+    private var lastId = 0
 
     fun add(post: Post): Post {
         posts += post.copy(id = ++lastId, likes = post.likes.copy())
