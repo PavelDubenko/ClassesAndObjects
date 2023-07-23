@@ -11,7 +11,8 @@ data class Post(
     val copyright: String = "My Post",
     val isPinned: Boolean = true,
     var likes: Likes,
-    var comments: Comments?
+    var comments: Comments?,
+    val attachment: Attachment
 )
 
 data class Likes (
@@ -33,14 +34,14 @@ object WallService {
     private var lastId = 0
 
     fun add(post: Post): Post {
-        posts += post.copy(id = ++lastId, likes = post.likes.copy())
+        posts += post.copy(id = ++lastId, likes = post.likes.copy(), comments = post.comments?.copy())
         return posts.last()
     }
 
     fun update(post: Post): Boolean{
         for((index, oldPost) in posts.withIndex()) {
             if (oldPost.id == post.id) {
-                posts[index] = post.copy(likes = post.likes.copy())
+                posts[index] = post.copy(likes = post.likes.copy(), comments = post.comments?.copy())
                 return true
             }
         }
@@ -56,10 +57,10 @@ object WallService {
 }
 fun main() {
 
-    WallService.add(Post(1, likes = Likes(10), comments = null))
-    WallService.add(Post(2, likes = Likes(5), comments = null))
+    WallService.add(Post(1, likes = Likes(10), comments = null, attachment = FileAttachment(file = File(1, 1, "test", "testUrl"))))
+    WallService.add(Post(2, likes = Likes(5), comments = null, attachment = FileAttachment(file = File(1, 1, "test", "testUrl"))))
     WallService.printAllPosts()
-    WallService.update(Post(1, likes = Likes(15), comments = null))
+    WallService.update(Post(1, likes = Likes(15), comments = null, attachment = FileAttachment(file = File(1, 1, "test", "testUrl"))))
     WallService.printAllPosts()
     println(WallService.posts.size)
 
