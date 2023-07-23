@@ -8,7 +8,10 @@ data class Post(
     val canDelete: Boolean = true,
     val canEdit: Boolean = true,
     val isFavourite: Boolean = true,
-    var likes: Likes
+    val copyright: String = "My Post",
+    val isPinned: Boolean = true,
+    var likes: Likes,
+    var comments: Comments?
 )
 
 data class Likes (
@@ -17,7 +20,13 @@ data class Likes (
     val canLike: Boolean = true,
     val canPublish: Boolean = true
 )
-
+data class Comments (
+    val count: Int,
+    val canPost: Boolean = true,
+    val groupsCanPost: Boolean = true,
+    val canClose: Boolean = true,
+    val canOpen: Boolean = true
+)
 object WallService {
 
     var posts = emptyArray<Post>()
@@ -47,10 +56,10 @@ object WallService {
 }
 fun main() {
 
-    WallService.add(Post(1, likes = Likes(10)))
-    WallService.add(Post(2, likes = Likes(5)))
+    WallService.add(Post(1, likes = Likes(10), comments = null))
+    WallService.add(Post(2, likes = Likes(5), comments = null))
     WallService.printAllPosts()
-    WallService.update(Post(1, likes = Likes(15)))
+    WallService.update(Post(1, likes = Likes(15), comments = null))
     WallService.printAllPosts()
     println(WallService.posts.size)
 
