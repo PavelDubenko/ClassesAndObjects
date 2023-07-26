@@ -1,13 +1,13 @@
 data class Post(
-    val id: Int,
-    val ownerId: Int = 1,
-    val fromId: Int = 2,
+    val id: Int = 0,
+    val ownerId: Int = 0,
+    val fromId: Int = 0,
     val replyOwnerId: Int = 0,
-    val replyPostId: Int = 5,
+    val replyPostId: Int = 0,
     val ownerName: String = "Pavel",
     val date: Int = 11072023,
     val text: String = "kotlin is cool",
-    val createdBy: Int = 1,
+    val createdBy: Int = 0,
     val canPin: Boolean = true,
     val canDelete: Boolean = true,
     val canEdit: Boolean = true,
@@ -16,7 +16,7 @@ data class Post(
     val isPinned: Boolean = true,
     var likes: Likes = Likes(),
     var comments: Comments?,
-    val attachment: Attachment,
+    val attachment: Attachment?,
     val friendsOnly: Boolean = true,
     var reposts: Reposts = Reposts(),
     var views: Views = Views(),
@@ -24,35 +24,52 @@ data class Post(
     val markedAsAds: Boolean = false,
     var geo: Geo = Geo()
 )
+class PostNotFoundException(message: String) : Exception(message)
 data class Geo (
     val type: String = "test geo",
     val coordinates: String = "test coordinates"
 )
 data class Views (
-    val count: Int = 5
+    val count: Int = 0
 )
 data class Reposts (
-    val count: Int = 10,
+    val count: Int = 0,
     val userReposted: Boolean = false
 )
 data class Likes (
-    val count: Int = 5,
+    val count: Int = 0,
     val userLikes: Boolean = true,
     val canLike: Boolean = true,
     val canPublish: Boolean = true
 )
 data class Comments (
-    val count: Int,
+    val count: Int = 0,
     val canPost: Boolean = true,
     val groupsCanPost: Boolean = true,
     val canClose: Boolean = true,
-    val canOpen: Boolean = true
+    val canOpen: Boolean = true,
+    val text: String
 )
 object WallService {
 
     var posts = emptyArray<Post>()
+    var comments = emptyArray<Comments>()
     private var lastId = 0
+    private var commentsCount = 0
 
+    fun createComment(postId: Int, comment: Comments): Comments? {
+
+      for((index, post) in posts.withIndex()) {
+            if(postId == post.id) {
+                comments += comment.copy(count = comments.size + 1)
+                posts[index] = post.copy(likes = post.likes.copy(), comments = comment.copy(count = ++commentsCount))
+                return comment
+                } else {
+                throw PostNotFoundException("Post with ID $postId not found")
+            }
+        }
+        return null
+}
     fun clear() {
         posts = emptyArray()
         lastId = 0
@@ -78,15 +95,21 @@ object WallService {
             println(post)
         }
     }
-
+    fun printAllComments() {
+        for (comment in comments) {
+            println(comment)
+        }
+    }
 }
 fun main() {
-
-    WallService.add(Post(1, likes = Likes(10), comments = null, attachment = FileAttachment(file = File(1, 1, "test", "testUrl"))))
-    WallService.add(Post(2, likes = Likes(5), comments = null, attachment = FileAttachment(file = File(1, 1, "test", "testUrl"))))
+    WallService.add(Post(attachment = null, comments = null))
+    WallService.add(Post(attachment = null, comments = null))
     WallService.printAllPosts()
-    WallService.update(Post(1, likes = Likes(15), comments = null, attachment = FileAttachment(file = File(1, 1, "test", "testUrl"))))
+    WallService.createComment(1, comment = Comments(text = "comment"))
     WallService.printAllPosts()
-    println(WallService.posts.size)
+    WallService.createComment(1, comment = Comments(text = "comment2"))
+    WallService.printAllPosts()
+    WallService.createComment(2, comment = Comments(text = "kak zhe ya zaebalsya"))
+    WallService.printAllPosts()
 
 }
