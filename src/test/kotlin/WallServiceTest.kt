@@ -1,3 +1,4 @@
+import org.junit.Assert
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -38,5 +39,16 @@ class WallServiceTest {
         val result = WallService.update(nonExistingPost)
 
         assertFalse(result)
+    }
+    @Test(expected = PostNotFoundException::class)
+    fun shouldThrow() {
+        WallService.createComment(2, comment = Comments(text = "test text"))
+    }
+    @Test
+    fun createCommentExistingPost(){
+        WallService.add(post = Post(comments = null, attachment = null))
+        WallService.createComment(1, comment = Comments(text = "test Tesxt"))
+        val result = WallService.comments.size
+        assertEquals(1,result)
     }
 }
