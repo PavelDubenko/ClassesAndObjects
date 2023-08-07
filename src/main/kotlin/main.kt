@@ -1,5 +1,3 @@
-import WallService.posts
-
 data class Post(
     val id: Int = 0,
     val ownerId: Int = 0,
@@ -17,8 +15,8 @@ data class Post(
     val copyright: String = "My Post",
     val isPinned: Boolean = true,
     var likes: Likes = Likes(),
-    var comments: Comments?,
-    val attachment: Attachment?,
+    var comments: Comments? = null,
+    val attachment: Attachment? = null,
     val friendsOnly: Boolean = true,
     var reposts: Reposts = Reposts(),
     var views: Views = Views(),
@@ -45,12 +43,14 @@ data class Likes (
     val canPublish: Boolean = true
 )
 data class Comments (
+    val id: Int = 0,
     val count: Int = 0,
     val canPost: Boolean = true,
     val groupsCanPost: Boolean = true,
     val canClose: Boolean = true,
     val canOpen: Boolean = true,
-    val text: String
+    val text: String,
+    var deleted: Boolean = false
 )
 object WallService {
 
@@ -104,13 +104,12 @@ object WallService {
 
 
 fun main() {
-    WallService.add(Post(attachment = null, comments = null))
-    WallService.add(Post(attachment = null, comments = null))
-    WallService.printAllPosts()
-    WallService.createComment(2, comment = Comments(text = "hi"))
-    WallService.printAllComments()
-    WallService.createComment(2, comment = Comments(text = "bye"))
-    WallService.printAllComments()
+    NoteService.addNote(note = Note())
+    NoteService.printAllNotes()
+    NoteService.addComment(1, comment = Comments(text = "test comment"))
+    NoteService.addComment(1, comment = Comments(text = "another comment"))
+
+    NoteService.printAllNotes()
 
 
 
